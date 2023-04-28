@@ -19,9 +19,10 @@ def years_ru(years_gap):
 def get_products(file):
     products = {}
     products_df = pandas.read_excel(file, na_values='nan', keep_default_na=False)
-    categories = set(products_df['Категория'])
+    products_df.columns = ['category', 'name', 'kind', 'price', 'image', 'sale']
+    categories = set(products_df['category'])
     for category in categories:
-        products[category] = products_df.loc[products_df['Категория'] == category].to_dict('records')
+        products[category] = products_df.loc[products_df['category'] == category].to_dict('records')
 
     return products
 
@@ -36,14 +37,14 @@ if __name__ == '__main__':
 
     years_gap = datetime.datetime.now().year - 1920
 
-    file = 'wine2.xlsx'
+    file = 'wine.xlsx'
     products = get_products(file)
 
-    wines = pandas.read_excel('wine.xlsx')
-    wines.columns = ['name', 'kind', 'price', 'image']
+    '''wines = pandas.read_excel('wine.xlsx')
+    wines.columns = ['name', 'kind', 'price', 'image']'''
 
     rendered_page = template.render(
-        wines=wines.to_dict('records'),
+        categories=products,
         age=f'{str(years_gap)} {years_ru(years_gap)}',
     )
 
@@ -54,4 +55,11 @@ if __name__ == '__main__':
     server.serve_forever()
 
 '''
-pprint.pprint(products)'''
+file = 'wine2.xlsx'
+products = get_products(file)
+
+pprint.pprint(products)
+print(products.keys())
+for key in products.keys():
+    print(key)
+'''
