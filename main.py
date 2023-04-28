@@ -1,8 +1,10 @@
 import datetime
 import pandas
+import pprint
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from collections import defaultdict
 
 
 def years_ru(years_gap):
@@ -14,25 +16,42 @@ def years_ru(years_gap):
     return 'год'
 
 
-env = Environment(
-    loader=FileSystemLoader('.'),
-    autoescape=select_autoescape(['html', 'xml'])
-)
+def get_products(file):
+    products = {}
+    products_df = pandas.read_excel(file, na_values='nan', keep_default_na=False)
+    categories = set(products_df['Категория'])
+    for category in categories:
+        products[category] = products_df.loc[products_df['Категория'] == category].to_dict('records')
 
-template = env.get_template('template.html')
+    return products
 
-years_gap = datetime.datetime.now().year - 1920
 
-wines = pandas.read_excel('wine.xlsx')
-wines.columns = ['name', 'kind', 'price', 'image']
+if __name__ == '__main__':
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
 
-rendered_page = template.render(
-    wines=wines.to_dict('records'),
-    age=f'{str(years_gap)} {years_ru(years_gap)}',
-)
+    template = env.get_template('template.html')
 
-with open('index.html', 'w', encoding="utf8") as file:
-    file.write(rendered_page)
+    years_gap = datetime.datetime.now().year - 1920
 
-server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-server.serve_forever()
+    file = 'wine2.xlsx'
+    products = get_products(file)
+
+    wines = pandas.read_excel('wine.xlsx')
+    wines.columns = ['name', 'kind', 'price', 'image']
+
+    rendered_page = template.render(
+        wines=wines.to_dict('records'),
+        age=f'{str(years_gap)} {years_ru(years_gap)}',
+    )
+
+    with open('index.html', 'w', encoding="utf8") as file:
+        file.write(rendered_page)
+
+    server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+    server.serve_forever()
+
+'''
+pprint.pprint(products)'''
