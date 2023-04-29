@@ -1,4 +1,6 @@
 import datetime
+import os
+
 import pandas
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
@@ -17,9 +19,9 @@ def years_ru(years_gap):
     return 'год'
 
 
-def get_products(file):
+def get_products(file_path):
     products = {}
-    products_df = pandas.read_excel(file, na_values='nan', keep_default_na=False)
+    products_df = pandas.read_excel(file_path, na_values='nan', keep_default_na=False)
     products_df.columns = ['category', 'name', 'kind', 'price', 'image', 'sale']
     categories = set(products_df['category'])
     for category in categories:
@@ -38,8 +40,8 @@ if __name__ == '__main__':
 
     years_gap = datetime.datetime.now().year - FOUNDATION_YEAR
 
-    file = 'wine.xlsx'
-    products = get_products(file)
+    file_path = os.getenv('FILE_PATH', default='wine.xlsx')
+    products = get_products(file_path)
 
     rendered_page = template.render(
         categories=products,
