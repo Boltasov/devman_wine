@@ -38,14 +38,14 @@ if __name__ == '__main__':
 
     template = env.get_template('template.html')
 
-    years_gap = datetime.datetime.now().year - FOUNDATION_YEAR
+    company_age = datetime.datetime.now().year - FOUNDATION_YEAR
 
     file_path = os.getenv('FILE_PATH', default='wine.xlsx')
     products = get_products(file_path)
 
     rendered_page = template.render(
         categories=products,
-        age=f'{str(years_gap)} {years_ru(years_gap)}',
+        age=f'{str(company_age)} {years_ru(company_age)}',
     )
 
     with open('index.html', 'w', encoding="utf8") as file:
