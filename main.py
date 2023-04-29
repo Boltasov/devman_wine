@@ -10,7 +10,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 FOUNDATION_YEAR = 1920
 
 
-def years_ru(years_gap):
+def get_years_ru(years_gap):
     last_digit = years_gap % 10
     if last_digit == 0 or (5 <= last_digit <= 9) or (11 <= years_gap % 100 <= 14):
         return 'лет'
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     rendered_page = template.render(
         categories=products,
-        age=f'{str(company_age)} {years_ru(company_age)}',
+        age=f'{str(company_age)} {get_years_ru(company_age)}',
     )
 
     with open('index.html', 'w', encoding="utf8") as file:
