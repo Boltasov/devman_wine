@@ -5,6 +5,9 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
+FOUNDATION_YEAR = 1920
+
+
 def years_ru(years_gap):
     last_digit = years_gap % 10
     if last_digit == 0 or (5 <= last_digit <= 9) or (11 <= years_gap % 100 <= 14):
@@ -33,7 +36,7 @@ if __name__ == '__main__':
 
     template = env.get_template('template.html')
 
-    years_gap = datetime.datetime.now().year - 1920
+    years_gap = datetime.datetime.now().year - FOUNDATION_YEAR
 
     file = 'wine.xlsx'
     products = get_products(file)
