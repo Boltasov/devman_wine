@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     rendered_page = template.render(
         categories=products,
-        age=f'{str(company_age)} {get_years_ru(company_age)}',
+        age=f'{company_age} {get_years_ru(company_age)}',
     )
 
     with open('index.html', 'w', encoding="utf8") as file:
